@@ -170,6 +170,6 @@ app.delete('/events/:id', async (req, res) => {
   }, 1000);
 });
 
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
+app.listen(3212, () => {
+  console.log('Server running on port 3212');
 });
