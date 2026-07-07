@@ -4,24 +4,28 @@ import { useMutation } from '@tanstack/react-query';
 import Modal from '../UI/Modal.jsx';
 import EventForm from './EventForm.jsx';
 
-import { createNewEvent } from '../../util/http.js';
+import { createNewEvent, queryClient } from '../../util/http.js';
 import ErrorBlock from '../UI/ErrorBlock.jsx';
 
 export default function NewEvent() {
   const navigate = useNavigate();
 
   //useMutation returns an object
-  //muate diz ao useMutation quando executar o envio da requisicao
+  //mutate diz ao useMutation quando executar o envio da requisicao
   const {mutate, isPending, isError, error} = useMutation({
     queryKey: ['events'],
-    mutationFn: createNewEvent
+    mutationFn: createNewEvent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['events']}); //invalidar a query de eventos
+      navigate('/events');} //retorna para a pagina de eventos
+      //e vamos invalidar a query de eventos, para que o react query busque os novos eventos
   })
+  //MUTATE é para alterar dados
+  //QUERY é para buscar dados
 
   function handleSubmit(formData) {
     mutate({event: formData});
   }
-
-
 
   return (
     <Modal onClose={() => navigate('../')}>

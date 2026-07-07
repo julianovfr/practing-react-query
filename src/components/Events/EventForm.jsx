@@ -3,15 +3,18 @@ import { useQuery } from '@tanstack/react-query';
 import ErrorBlock from '../UI/ErrorBlock.jsx'
 
 import ImagePicker from '../ImagePicker.jsx';
+import { fetchSelectableImages } from '../../util/http.js';
 
 export default function EventForm({ inputData, onSubmit, children }) {
   const [selectedImage, setSelectedImage] = useState(inputData?.image);
 
   //nao precisa de key dinamica, pois o retorno é sempre o mesmo
-  const {data, isLoading, isError, error} = useQuery({
+  const {data, isPending, isError, error} = useQuery({
     queryKey: ['events-images'],
-    quertFn: fetchSelectableImages()
+    queryFn: fetchSelectableImages,
   });
+  //agora posso ligar esse código com a mutation 
+  //para avaliar se a requisicao falhou ou nao
 
   function handleSelectImage(image) {
     setSelectedImage(image);
@@ -38,11 +41,11 @@ export default function EventForm({ inputData, onSubmit, children }) {
         />
       </p>
 
-      {isLoading && <p>Loading selectable images...</p>}
+      {isPending && <p>Loading selectable images...</p>}
       {isError && 
         <ErrorBlock
           title="Failed to load selectable images"
-          messag="Please try again later."
+          message="Please try again later."
         />}
       {
       /* so renderizara imagens se existir data*/
